@@ -1,0 +1,5 @@
+data/certbot/*
+data/html/*
+data/log/*
+data/nginx/app.conf
+!**/.placeholder
