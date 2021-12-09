@@ -3,3 +3,5 @@ data/html/*
 data/log/*
 data/nginx/app.conf
 !**/.placeholder
+
+*.swp
