@@ -1,7 +1,6 @@
 server {
     listen 80;
-    listen [::]:80;
-    server_name example.com;
+    server_name www-new.nbis.se;
     server_tokens off;
 
     location /.well-known/acme-challenge/ {
@@ -19,15 +18,14 @@ server {
 
 #server {
 #    listen 443 ssl;
-#    listen [::]:443 ssl;
-#    server_name example.com;
+#    server_name www-new.nbis.se;
 #    server_tokens off;
 #    
-#    root /var/html;
+#    root /www;
 #
 #    # try to serve file directly, fallback to index.php
 #    location / {
-#        try_files $uri /index.html /index.php$is_args$args;
+#	try_files $uri /index.php$is_args$args;
 #    }
 #
 #    if (!-e $request_filename) {
@@ -44,8 +42,8 @@ server {
 #        include fastcgi_params;
 #    }
 #
-#    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
-#    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
+#    ssl_certificate /etc/letsencrypt/live/www-new.nbis.se/fullchain.pem;
+#    ssl_certificate_key /etc/letsencrypt/live/www-new.nbis.se/privkey.pem;
 #    include /etc/letsencrypt/options-ssl-nginx.conf;
 #    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 #}

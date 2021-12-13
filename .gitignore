@@ -2,6 +2,7 @@ data/certbot/*
 data/html/*
 data/log/*
 data/nginx/app.conf
+data/php-fpm/Dockerfile
 !**/.placeholder
 
 # Numerous always-ignore extensions

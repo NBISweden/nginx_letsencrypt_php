@@ -19,7 +19,7 @@ The first thing you need to do is to manually request a certificate from letsenc
    1. Download certbot's recommended SSL settings
       1. `curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > "data/certbot/conf/options-ssl-nginx.conf"`  
       1. `curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "data/certbot/conf/ssl-dhparams.pem"`
-   1. Start the web server, `docker-compose up -d`
+   1. Start the web server, `docker-compose up -d --force-recreate`
 
 Now the web server should be running and using the certificate you requested.
 

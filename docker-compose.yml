@@ -6,8 +6,8 @@ services:
     working_dir: /www
     volumes:
       - './data/html:/www:rw'
-      - './data/log:/var/log:rw'
-      - './data/php-fpm/php-ini-overrides.ini:/etc/php/8.0/fpm/conf.d/99-overrides.ini:ro'
+      - './data/log:/usr/local/var/log:rw'
+        #      - './data/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini:ro'
 
   nginx:
     restart: always
@@ -17,7 +17,7 @@ services:
       - "443:443"
     volumes:
       - './data/log:/var/log:rw'
-      - './data/html:/var/html:rw'
+      - './data/html:/www:rw'
       - './data/nginx:/etc/nginx/conf.d:ro'
       - './data/certbot/www:/var/www/certbot:ro'
       - './data/certbot/conf:/etc/letsencrypt:ro'
