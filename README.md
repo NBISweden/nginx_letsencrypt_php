@@ -8,8 +8,12 @@ The first thing you need to do is to manually request a certificate from letsenc
 
 1. `git clone https://github.com/dahlo/nginx_letsencrypt_php.git ; cd nginx_letsencrypt_php`
 1. Rename and modify the nginx config file
-   1. `Rename data/nginx/app.conf.dist` to `data/nginx/app.conf`
+   1. Rename `data/nginx/app.conf.dist` to `data/nginx/app.conf`
    1. Change the domain name `example.com` to your own domain everywhere in the file (4 places).
+1. Rename and modify the PHP Dockerfile
+   1. Rename `data/php-fpm/Dockerfile.dist` to `data/php-fpm/Dockerfile`
+   1. Modify `data/php-fpm/Dockerfile` to suit your needs, e.g. install and enable various PHP modules.
+   1. Optionally, check which user id your user has (`id -u`) and modify the id given to the www-user inside the container, by editing the `usermod` command in the `Dockerfile`. This will minimize file ownership problems when you modify files in `data/html` from outside the container.
 1. Get the certificate
    1. Temporarily start the web server, `docker-compose up -d`
    1. Run the following, and change email and domain name to match your, `docker-compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --non-interactive --email user@example.com -d example.com` 
