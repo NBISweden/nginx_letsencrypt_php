@@ -7,7 +7,6 @@ services:
     volumes:
       - './data/html:/www:rw'
       - './data/log:/usr/local/var/log:rw'
-        #      - './data/php-fpm/php-ini-overrides.ini:/usr/local/etc/php/conf.d/99-overrides.ini:ro'
 
   nginx:
     restart: always
