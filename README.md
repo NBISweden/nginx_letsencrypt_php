@@ -1,5 +1,5 @@
-# A simple installation of Nginx with PHP, and https via Letsencrypt, based only on official Docker images
-The only non-official Docker imaged used in this setup is the `Dockerfile` in `data/php-fpm` which is needed to be able to install custom php libraries. View it and make sure it only contains no funny business, only `apk add` and `docker-php-ext-install` commands, and is based of the official [PHP image](https://hub.docker.com/_/php) (like `php:8.0xxxxx`).
+# A simple installation of [Nginx](https://hub.docker.com/_/nginx) with [PHP](https://hub.docker.com/_/php), and https via Letsencrypt and [Certbot](https://hub.docker.com/r/certbot/certbot/), based only on official Docker images
+The only non-official Docker imaged used in this setup is the `Dockerfile` in `data/php-fpm` which is needed to be able to install custom php libraries. View it and make sure it only contains no funny business, only `apk add` and `docker-php-ext-install` commands, and is based of the official PHP image (like `php:8.0xxxxx`).
 
 Be up-and-running in 5 minutes, just follow the steps below to get started. 
 
@@ -15,6 +15,9 @@ mv data/nginx/app.conf.dist data/nginx/app.conf ; nano data/nginx/app.conf
 
 # rename php dockerfile and modify if you need extra modules
 mv data/php-fpm/Dockerfile.dist data/php-fpm/Dockerfile
+
+# rename docker-compose.yml.dist
+mv docker-compose.yml.dist docker-compose.yml
 
 # get certificate, replace email and domain name
 docker-compose up -d ; docker-compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --non-interactive --email user@example.com -d example.com ; docker-compose down
