@@ -1,9 +1,32 @@
 # A simple installation of Nginx with PHP, and https via Letsencrypt, based only on official Docker images
-The only non-official Docker imaged used in this setup is the `Dockerfile` in `data/php-fpm` which is needed to be able to install custom php libraries. View it and make sure it only contains `apt install` commands, and is based of the official [PHP image](https://hub.docker.com/_/php).
+The only non-official Docker imaged used in this setup is the `Dockerfile` in `data/php-fpm` which is needed to be able to install custom php libraries. View it and make sure it only contains no funny business, only `apk add` and `docker-php-ext-install` commands, and is based of the official [PHP image](https://hub.docker.com/_/php) (like `php:8.0xxxxx`).
 
 Be up-and-running in 5 minutes, just follow the steps below to get started. 
 
 ## First time setup
+
+### TLDR
+```bash
+# clone repo
+git clone https://github.com/dahlo/nginx_letsencrypt_php.git ; cd nginx_letsencrypt_php
+
+# rename nginx config and update example.com to your domain
+mv data/nginx/app.conf.dist data/nginx/app.conf ; nano data/nginx/app.conf
+
+# rename php dockerfile and modify if you need extra modules
+mv data/php-fpm/Dockerfile.dist data/php-fpm/Dockerfile
+
+# get certificate, replace email and domain name
+docker-compose up -d ; docker-compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --non-interactive --email user@example.com -d example.com ; docker-compose down
+ 
+# uncomment ssl server section in data/nginx/app.conf and download recommended ssl settings from certbot
+curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > "data/certbot/conf/options-ssl-nginx.conf"
+curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "data/certbot/conf/ssl-dhparams.pem"
+
+# start finished server
+docker-compose up -d --force-recreate
+```
+
 The first thing you need to do is to manually request a certificate from letsencrypt.
 
 1. `git clone https://github.com/dahlo/nginx_letsencrypt_php.git ; cd nginx_letsencrypt_php`
@@ -28,31 +51,24 @@ The first thing you need to do is to manually request a certificate from letsenc
 Now the web server should be running and using the certificate you requested.
 
 ### Certificate renewal
-The letsencrypt certificates has to be renewed every 3 months. To automate this process, create a cronjob that tries to renew the cert once every month. If renewal is not need it will not try to do it.
-
-```bash
-# edit crontab
-crontab -e
-
-# insert this entry
-0 2 1 * * cd /path/to/repo ; docker-compose run --rm certbot renew
-```
-
-## PHP config
-Add new modules to be install in `data/php-fpm/Dockerfile` and enable them in `data/php-fpm/php-ini-overrides.ini`
+The letsencrypt certificates has to be renewed every 3 months. The entrypoint command of the Certbot container in `docker-compose.yml` will have the container check every 30 days if renewal is needed and handle the renewal.
 
 # Troubleshooting
 ## Docker containers not reaching the internet e.g. apt install servers
 
-When running Docker in a virtual setting like OpenStack, it will prioritize the wrong network within the container if the network interface uses a non-standard MTU. Check which MTU the virtual network card has using `ip link`, then run the following command with the MTU you have (1400 in the example below).
+When running Docker in a virtual setting like OpenStack, there can be an issue with the network connectivity due to Dockers default value for MTU (Maximum Transmission Unit). The default value of the host computer is often 1500, and Docker will set its virtual network card to 1500 as well. Since Openstack has reserved 50 of the 1500 bytes, the Docker virtual network card will be larger than what Openstack can provide (1450). This breaks the internet connectivity of the container.
+
+Check which MTU the host computer's network card has using `ip link`, then run the following command on the host computer with the MTU you have (1450 in the example below).
 
 ```bash
 cat << EOF > /etc/docker/daemon.json
 {
-  "mtu": 1400
+  "mtu": 1450
 }
 EOF
 ```
+
+and restart the docker service.
 
 From https://mlohr.com/docker-mtu/
 

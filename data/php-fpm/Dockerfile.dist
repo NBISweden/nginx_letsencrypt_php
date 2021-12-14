@@ -3,10 +3,11 @@ WORKDIR "/www"
 
 # Installing dependencies for PHP modules
 #RUN apk update && apk add --no-cache \
+#         libpng \
+#         libpng-dev \
 #         libzip \
 #         libzip-dev \
-#         libpng \
-#         libpng-dev
+#         shadow
 #RUN rm -rf /var/cache/apk/
 
 # Install and enable PHP modules
