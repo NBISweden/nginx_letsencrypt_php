@@ -1,9 +1,10 @@
 data/certbot/*
-data/html/*
+html/*
 data/log/*
 data/nginx/app.conf
 data/php-fpm/Dockerfile
 !**/.placeholder
+docker-compose.yml
 
 # Numerous always-ignore extensions
 *.diff
