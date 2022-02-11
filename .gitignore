@@ -1,9 +1,9 @@
 data/certbot/*
-html/*
+!data/certbot/conf/.gitkeep
 data/log/*
+!data/log/nginx/.gitkeep
 data/nginx/app.conf
 data/php-fpm/Dockerfile
-!**/.placeholder
 docker-compose.yml
 
 # Numerous always-ignore extensions
