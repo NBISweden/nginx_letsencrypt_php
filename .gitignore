@@ -1,8 +1,5 @@
 data/certbot/*
-!data/certbot/conf/.gitkeep
-!data/certbot/.gitkeep
 data/log/*
-!data/log/nginx/.gitkeep
 data/nginx/app.conf
 data/php-fpm/Dockerfile
 docker-compose.yml
