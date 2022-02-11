@@ -1,5 +1,7 @@
-# A simple installation of [Nginx](https://hub.docker.com/_/nginx) with [PHP](https://hub.docker.com/_/php), and https via Letsencrypt and [Certbot](https://hub.docker.com/r/certbot/certbot/), based only on official Docker images
-The only non-official Docker imaged used in this setup is the `Dockerfile` in `data/php-fpm` which is needed to be able to install custom php libraries. View it and make sure it only contains no funny business, only `apk add` and `docker-php-ext-install` commands, and is based of the official PHP image (like `php:8.0xxxxx`).
+# nginx_letsencrypt_php
+A simple installation of [Nginx](https://hub.docker.com/_/nginx) with [PHP](https://hub.docker.com/_/php), and https via Letsencrypt and [Certbot](https://hub.docker.com/r/certbot/certbot/), based only on official Docker images.
+
+The only non-official Docker imaged used in this setup is the `Dockerfile` in `data/php-fpm` which is needed to be able to install custom php libraries. Review it and make sure it doesn't contains any funny business, only `apk add` and `docker-php-ext-install` commands, and is based of the official PHP image (like `php:8.0xxxxx`).
 
 Be up-and-running in 5 minutes, just follow the steps below to get started. 
 
@@ -10,19 +12,22 @@ Be up-and-running in 5 minutes, just follow the steps below to get started.
 # clone repo
 git clone https://github.com/dahlo/nginx_letsencrypt_php.git ; cd nginx_letsencrypt_php
 
-# rename nginx config and update example.com to your domain
-mv data/nginx/app.conf.dist data/nginx/app.conf ; nano data/nginx/app.conf
+# copy nginx config and update example.com to your domain
+cp data/nginx/app.conf.dist data/nginx/app.conf ; nano data/nginx/app.conf
 
-# rename php dockerfile and modify if you need extra modules
-mv data/php-fpm/Dockerfile.dist data/php-fpm/Dockerfile
+# copy php dockerfile and modify if you need extra modules
+cp data/php-fpm/Dockerfile.dist data/php-fpm/Dockerfile
 
-# rename docker-compose.yml.dist
-mv docker-compose.yml.dist docker-compose.yml
+# copy docker-compose.yml.dist
+cp docker-compose.yml.dist docker-compose.yml
 
 # get certificate, replace email and domain name
-docker-compose up -d ; docker-compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --non-interactive --email user@example.com -d example.com ; docker-compose down
+docker-compose up -d ; docker-compose exec certbot certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --non-interactive --email user@example.com -d example.com ; docker-compose down
  
-# uncomment ssl server section in data/nginx/app.conf and download recommended ssl settings from certbot
+# uncomment ssl server section in data/nginx/app.conf
+nano data/nginx/app.conf
+
+# download recommended ssl settings from certbot
 curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > "data/certbot/conf/options-ssl-nginx.conf"
 curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "data/certbot/conf/ssl-dhparams.pem"
 
@@ -33,16 +38,16 @@ docker-compose up -d --force-recreate
 The first thing you need to do is to manually request a certificate from letsencrypt.
 
 1. `git clone https://github.com/dahlo/nginx_letsencrypt_php.git ; cd nginx_letsencrypt_php`
-1. Rename and modify the nginx config file
-   1. Rename `data/nginx/app.conf.dist` to `data/nginx/app.conf`
+1. Copy and modify the nginx config file
+   1. Copy `data/nginx/app.conf.dist` to `data/nginx/app.conf`
    1. Change the domain name `example.com` to your own domain everywhere in the file (4 places).
-1. Rename and modify the PHP Dockerfile
-   1. Rename `data/php-fpm/Dockerfile.dist` to `data/php-fpm/Dockerfile`
+1. Copy and modify the PHP Dockerfile
+   1. Copy `data/php-fpm/Dockerfile.dist` to `data/php-fpm/Dockerfile`
    1. Modify `data/php-fpm/Dockerfile` to suit your needs, e.g. install and enable various PHP modules.
    1. Optionally, check which user id your user has (`id -u`) and modify the id given to the www-user inside the container, by editing the `usermod` command in the `Dockerfile`. This will minimize file ownership problems when you modify files in `data/html` from outside the container.
 1. Get the certificate
    1. Temporarily start the web server, `docker-compose up -d`
-   1. Run the following, and change email and domain name to match your, `docker-compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --non-interactive --email user@example.com -d example.com` 
+   1. Run the following, and change email and domain name to match your, `docker-compose exec certbot certbot certonly --webroot --webroot-path /var/www/certbot/ --agree-tos --non-interactive --email user@example.com -d example.com`
    1. Shutdown the web server, `docker-compose down`
 1. Make nginx use the certificate
    1. Uncomment the whole ssl server section in `data/nginx/app.conf`
