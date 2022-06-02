@@ -54,12 +54,24 @@ The first thing you need to do is to manually request a certificate from letsenc
    1. Download certbot's recommended SSL settings
       1. `curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf > "data/certbot/conf/options-ssl-nginx.conf"`  
       1. `curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams.pem > "data/certbot/conf/ssl-dhparams.pem"`
-   1. Start the web server, `docker-compose up -d --force-recreate`
+1. Start the web server, `docker-compose up -d --force-recreate`
 
 Now the web server should be running and using the certificate you requested.
 
 ### Certificate renewal
 The letsencrypt certificates has to be renewed every 3 months. The entrypoint command of the Certbot container in `docker-compose.yml` will have the container check every 30 days if renewal is needed and handle the renewal.
+
+## Running locally without SSL
+Follow the steps above for setting up the server with SSL, but
+
+* Skip step 4 and 5.
+* In `data/nginx/app.conf`, 
+   * Change `listen 443 ssl;` to `listen 443;`
+   * Comment out both `server_name example.com;` lines (`# server_name example.com`) to make the server listen to its IP.
+   * Comment out the 4 SSL option lines at the end, starting with
+      * `ssl_certificate`, `ssl_certificate_key`, `include`, `ssl_dhparam`
+* Start the web server normally, `docker-compose up -d --force-recreate`
+* Connect to the server using its IP and port number, `http://192.168.1.10:443`
 
 # Troubleshooting
 ## Docker containers not reaching the internet e.g. apt install servers
