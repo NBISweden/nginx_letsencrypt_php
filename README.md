@@ -7,7 +7,26 @@ Be up-and-running in 5 minutes, just follow the steps below to get started.
 
 ## First time setup
 
-### TLDR
+### TLDR to set up a plain html server without a DNS name (development server)
+```bash
+# clone repo
+git clone https://github.com/dahlo/nginx_letsencrypt_php.git ; cd nginx_letsencrypt_php
+
+# copy nginx devel config
+cp data/nginx/app.devel.conf.dist data/nginx/app.conf
+
+# copy php dockerfile and modify if you need extra modules
+cp data/php-fpm/Dockerfile.dist data/php-fpm/Dockerfile
+
+# copy docker-compose.yml.dist and modify it if you need to change ports for the web server
+cp docker-compose.yml.dist docker-compose.yml
+
+# start finished server
+docker-compose up -d
+```
+
+
+### TLDR to set up a SSL enabled server with a DNS name (production server)
 ```bash
 # clone repo
 git clone https://github.com/dahlo/nginx_letsencrypt_php.git ; cd nginx_letsencrypt_php
@@ -35,6 +54,8 @@ curl -s https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot
 docker-compose up -d --force-recreate
 ```
 
+### Long version to set up a SSL enabled server with a DNS name (production server)
+
 The first thing you need to do is to manually request a certificate from letsencrypt.
 
 1. `git clone https://github.com/dahlo/nginx_letsencrypt_php.git ; cd nginx_letsencrypt_php`
@@ -60,18 +81,6 @@ Now the web server should be running and using the certificate you requested.
 
 ### Certificate renewal
 The letsencrypt certificates has to be renewed every 3 months. The entrypoint command of the Certbot container in `docker-compose.yml` will have the container check every 30 days if renewal is needed and handle the renewal.
-
-## Running locally without SSL
-Follow the steps above for setting up the server with SSL, but
-
-* Skip step 4 and 5.
-* In `data/nginx/app.conf`, 
-   * Change `listen 443 ssl;` to `listen 443;`
-   * Comment out both `server_name example.com;` lines (`# server_name example.com`) to make the server listen to its IP.
-   * Comment out the 4 SSL option lines at the end, starting with
-      * `ssl_certificate`, `ssl_certificate_key`, `include`, `ssl_dhparam`
-* Start the web server normally, `docker-compose up -d --force-recreate`
-* Connect to the server using its IP and port number, `http://192.168.1.10:443`
 
 # Troubleshooting
 ## Docker containers not reaching the internet e.g. apt install servers
