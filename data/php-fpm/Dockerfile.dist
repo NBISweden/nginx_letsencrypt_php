@@ -15,7 +15,7 @@ WORKDIR "/www"
 
 # Change user and group id of www-data in the container to match a user on the host (check with `id`)
 # to avoid ownership issues.
-#RUN apk update ; apk add --no-cache shadow ; usermod -u 1000 -g 1000 www-data ; rm -rf /var/cache/apk/
+#RUN apk update ; apk add --no-cache shadow ; usermod -u 1000 www-data ; rm -rf /var/cache/apk/
 
 
 CMD ["php-fpm"]*
