@@ -3,6 +3,7 @@ data/log/*
 data/nginx/app.conf
 data/php-fpm/Dockerfile
 docker-compose.yml
+html/*
 
 # Numerous always-ignore extensions
 *.diff
