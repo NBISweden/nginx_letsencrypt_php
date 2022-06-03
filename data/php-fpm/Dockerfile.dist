@@ -13,8 +13,9 @@ WORKDIR "/www"
 # Install and enable PHP modules
 #RUN docker-php-ext-install zip gd ; docker-php-ext-enable zip gd
 
-# Change user id of www-data in the container to match a user on the host
+# Change user and group id of www-data in the container to match a user on the host (check with `id`)
 # to avoid ownership issues.
-RUN usermod -u 1000 www-data
+#RUN apk update ; apk add --no-cache shadow ; usermod -u 1000 -g 1000 www-data ; rm -rf /var/cache/apk/
+
 
 CMD ["php-fpm"]*
